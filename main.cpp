@@ -9,6 +9,7 @@ extern void  TaskDeps_v3 ();
 extern void  AwaitOverlod ();
 extern void  GetCurrentCoro ();
 extern void  DestroyUncompleteCoro ();
+extern void  TaskSystemSample ();
 
 // to use '_CrtDumpMemoryLeaks()'
 #ifdef _MSC_VER
@@ -32,6 +33,7 @@ int  main ()
     AwaitOverlod();         // 6
     GetCurrentCoro();       // 7
     DestroyUncompleteCoro();// 8
+    TaskSystemSample();     // 9
 
     // check for memleaks
     #ifdef _MSC_VER

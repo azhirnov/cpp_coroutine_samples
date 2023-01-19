@@ -51,7 +51,7 @@ namespace
             // <-- resume
             // this part of coroutine has never been executed
 
-            std::cout << "resume 2";
+            std::cout << "resume 2\n";
 
             ::operator delete(mem);
             co_return;
@@ -60,7 +60,7 @@ namespace
         t0.Resume();
 
         if ( t0 )
-            std::cout << "coroutine is not complete";
+            std::cout << "coroutine is not complete\n";
 
         // anyway destroy the coroutine
         t0.Destroy();
