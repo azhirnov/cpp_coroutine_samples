@@ -52,7 +52,7 @@ namespace
         #endif
 
         //   <-- resume
-        co_await Wait();
+        co_await Wait();    // ignoring return value
         
         //   <-- resume
         std::cout << "CoroFn - end\n";
@@ -60,7 +60,7 @@ namespace
 
     void  Run ()
     {
-        std::vector< std::coroutine_handle<> >    task_list;    // to avoid false pssitive memleak warning 
+        std::vector< std::coroutine_handle<> >    task_list;    // to avoid false positive memleak warning 
         taskListRef  = &task_list;
 
 

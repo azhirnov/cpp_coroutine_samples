@@ -28,7 +28,7 @@ namespace
     };
     
 
-    std::suspend_always  Suspent ()
+    std::suspend_always  Suspend ()
     {
         return {};
     }
@@ -46,7 +46,7 @@ namespace
             void*  mem = nullptr;
             //mem = ::operator new(1024);  // mem leak
 
-            co_await Suspent();
+            co_await Suspend();
             
             // <-- resume
             // this part of coroutine has never been executed

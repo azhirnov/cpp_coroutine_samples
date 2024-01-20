@@ -96,8 +96,8 @@ namespace
     }
 }
 
-extern void  AwaitOverlod ()
+extern void  AwaitOverload ()
 {
-    std::cout << "\n---- 6.AwaitOverlod ----\n";
+    std::cout << "\n---- 6.AwaitOverload ----\n";
     Run();
 }

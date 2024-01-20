@@ -51,9 +51,9 @@ public:
     void  add_dependency (AsyncTask* dep);
 
 protected:
-    virtual ~AsyncTask () { assert( _refCount.load() == 0 ); }
+    virtual ~AsyncTask ();
 
-    // Execute task/corotine.
+    // Execute task/coroutine.
     virtual void  run () = 0;
 
     // Internally calls destructor.
@@ -123,8 +123,14 @@ private:
 };
 
 
+AsyncTask::~AsyncTask ()
+{
+    assert( _refCount.load() == 0 );
+}
+
+
 // Add input dependency to current task/coroutine.
-// Task must be added back to task queue to wait until all input dependecy are complete.
+// Task must be added back to task queue to wait until all input dependency are complete.
 inline void  AsyncTask::add_dependency (AsyncTask* dep)
 {
     assert( _status.load() == Status::InProgress ); // if inside coroutine
@@ -146,7 +152,7 @@ void  AsyncTask::add_dependencies (Arg0&& arg0, Args&& ...args)
 }
 
 
-// Task contains pointer to AsyncTask or croutine.
+// Task contains pointer to AsyncTask or coroutine.
 template <typename T = void>
 struct Task;
 
@@ -211,7 +217,7 @@ public:
     [[nodiscard]] bool      is_complete ()          { assert( _ptr );  return _ptr->is_complete(); }
     [[nodiscard]] bool      has_dependencies ()const{ assert( _ptr );  return _ptr->has_dependencies(); }
     [[nodiscard]] auto*     to_promise ()           { assert( _ptr );  return _ptr.get(); }
-    [[nodiscard]] handle_t  to_corotine ()          { assert( _ptr );  return handle_t::from_promise( *_ptr ); }
+    [[nodiscard]] handle_t  to_coroutine ()         { assert( _ptr );  return handle_t::from_promise( *_ptr ); }
 
     // Returns copy of result because it can be used many times.
     // Move-ctor requires additional synchronization.
@@ -274,7 +280,7 @@ public:
     [[nodiscard]] bool      is_complete ()          { assert( _ptr );  return _ptr->is_complete(); }
     [[nodiscard]] bool      has_dependencies ()const{ assert( _ptr );  return _ptr->has_dependencies(); }
     [[nodiscard]] auto*     to_promise ()           { assert( _ptr );  return _ptr.get(); }
-    [[nodiscard]] handle_t  to_corotine ()          { assert( _ptr );  return handle_t::from_promise( *_ptr ); }
+    [[nodiscard]] handle_t  to_coroutine ()         { assert( _ptr );  return handle_t::from_promise( *_ptr ); }
     
     void                    get_result ()   const   {}
 
@@ -469,6 +475,8 @@ struct TaskAwaiter
 {
     Task<T>     dep;
 
+    explicit TaskAwaiter (Task<T> in) : dep{std::move(in)} {}
+
     bool  await_ready () const  { return false; }
     T     await_resume ()       { return dep.get_result(); }
         
@@ -488,7 +496,7 @@ struct TaskAwaiter
 template <typename T>
 [[nodiscard]] auto  operator co_await (Task<T> dep)
 {
-    return TaskAwaiter{ dep };
+    return TaskAwaiter{ std::move(dep) };
 }
 
 
@@ -497,6 +505,8 @@ template <typename ...Types>
 struct TaskAwaiter2
 {
     std::tuple<Task<Types>...>     deps;
+
+    explicit TaskAwaiter2 (std::tuple<Task<Types>...> in) : deps{std::move(in)} {}
 
     bool  await_ready () const  { return false; }
 
@@ -537,7 +547,7 @@ struct TaskAwaiter2
 template <typename ...Types>
 [[nodiscard]] auto  operator co_await (std::tuple<Task<Types>...> deps)
 {
-    return TaskAwaiter2{ deps };
+    return TaskAwaiter2{ std::move(deps) };
 }
 
 

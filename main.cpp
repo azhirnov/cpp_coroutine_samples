@@ -6,7 +6,7 @@ extern void  SimplePromise ();
 extern void  TaskDeps_v1 ();
 extern void  TaskDeps_v2 ();
 extern void  TaskDeps_v3 ();
-extern void  AwaitOverlod ();
+extern void  AwaitOverload ();
 extern void  GetCurrentCoro ();
 extern void  DestroyUncompleteCoro ();
 extern void  TaskSystemSample ();
@@ -30,7 +30,7 @@ int  main ()
     TaskDeps_v1();          // 5
     TaskDeps_v2();          // 5
     TaskDeps_v3();          // 5
-    AwaitOverlod();         // 6
+    AwaitOverload();        // 6
     GetCurrentCoro();       // 7
     DestroyUncompleteCoro();// 8
     TaskSystemSample();     // 9
